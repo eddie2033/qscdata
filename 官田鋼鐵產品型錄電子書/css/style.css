@@ -1,0 +1,198 @@
+/* flipbook-viewer v2.3.0 — Neutral grey theme (#545454), clean & secure */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #545454;
+  color: #e8e8e8;
+}
+
+/* ── Loading overlay ── */
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: #545454;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.4s ease;
+}
+
+#loading-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-text {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: #e0e0e0;
+}
+
+.progress-bar-container {
+  width: 280px;
+  height: 6px;
+  background: #3a3a3a;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #bdbdbd, #f0f0f0);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.loading-percent {
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+  color: #d0d0d0;
+}
+
+/* ── Main layout ── */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* ── Book container ── */
+#book-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  /* 主色 #545454（R84 G84 B84），中心極輕微提亮讓書本浮起 */
+  background: radial-gradient(ellipse at center, #5b5b5b 0%, #545454 70%);
+}
+
+/* page-flip renders canvases inside this — transform 用於縮放/平移 */
+#flipbook {
+  /* sized dynamically by JS */
+  transform-origin: center center;
+  transition: transform 0.15s ease-out;
+  will-change: transform;
+}
+
+/* 縮放狀態游標：放大時可拖曳平移 */
+#book-container.zoomed   { cursor: grab; }
+#book-container.grabbing { cursor: grabbing; }
+/* 拖曳當下關閉過場，平移才即時跟手 */
+#book-container.grabbing #flipbook { transition: none; }
+
+/* ── Controls bar ── */
+#controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: #3f3f3f;
+  border-top: 1px solid #6a6a6a;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.ctrl-btn {
+  background: #5e5e5e;
+  border: 1px solid #707070;
+  color: #f0f0f0;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ctrl-btn:hover {
+  background: #6e6e6e;
+  border-color: #9a9a9a;
+}
+
+.ctrl-btn:active {
+  background: #7a7a7a;
+}
+
+.ctrl-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+#page-info {
+  font-size: 0.9rem;
+  color: #d8d8d8;
+  min-width: 100px;
+  text-align: center;
+}
+
+/* 縮放百分比顯示 */
+#zoom-info {
+  font-size: 0.85rem;
+  color: #d8d8d8;
+  min-width: 48px;
+  text-align: center;
+}
+
+/* ── Fullscreen adjustments ── */
+:fullscreen #controls,
+:-webkit-full-screen #controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: rgba(63, 63, 63, 0.92);
+}
+
+:fullscreen #book-container,
+:-webkit-full-screen #book-container {
+  height: 100vh;
+  padding-bottom: 60px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  #controls {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .ctrl-btn {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.85rem;
+  }
+
+  #page-info {
+    font-size: 0.8rem;
+    min-width: 70px;
+  }
+
+  #zoom-info {
+    font-size: 0.78rem;
+    min-width: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ctrl-btn .btn-label {
+    display: none;
+  }
+}
