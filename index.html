@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 安全修正 v2.3.2 (2026-06-16)：framebusting 防點擊劫持（Checkmarx: Potential Clickjacking on Legacy Browsers，標準封鎖所有 iframe 嵌入） -->
+  <!-- 必須是 inline 純 script（不可加 type="module"），否則 file:// 離線開啟不執行會白屏；un-hide 用 'block' 才能蓋過下方 html{display:none} 規則 -->
+  <style>html{display:none;}</style>
+  <noscript><style>html{display:block !important;}</style></noscript>
+  <script>
+    if (self === top) { document.documentElement.style.display = 'block'; }
+    else { top.location = self.location; }
+  </script>
+
+  <title>官田鋼鐵 QUINTAIN STEEL 產品型錄</title>
+  <!-- ════════ viewer 安全基線 = v2.3.3（Checkmarx 已根治，勿降版）════════
+       1) 上方 framebusting：防 Potential Clickjacking（封鎖所有 iframe）。
+          un-hide 必用 'block'；script 必為 inline 純 script，**不可加 type="module"**（否則 file:// 離線白屏）。
+       2) app.js preloadWindow 用固定常數次數迴圈：防 Unchecked Input For Loop Condition (CWE-606)。
+          **勿讓使用者輸入進入任何迴圈條件**（Checkmarx 不認 if-guard / Math 夾擠為 sanitizer）。
+       3) 線上版 vercel.json 另加 X-Frame-Options: DENY + CSP frame-ancestors（離線包不需此檔）。
+       完整版本史與根因見 projects/mirdc-flipbook/README.md。 -->
+  <meta name="ebook-version" content="1.0.1-20260929">
+  <meta name="viewer-version" content="2.3.3-20260929">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Loading overlay -->
+  <div id="loading-overlay">
+    <div class="loading-text">載入型錄中…</div>
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" id="progress-fill"></div>
+    </div>
+    <div class="loading-percent" id="progress-text">0%</div>
+  </div>
+
+  <!-- Main app -->
+  <div id="app">
+    <div id="book-container">
+      <div id="flipbook"></div>
+    </div>
+
+    <div id="controls">
+      <button class="ctrl-btn" id="btn-first" title="第一頁">
+        <span>&#x23EE;</span>
+        <span class="btn-label">第一頁</span>
+      </button>
+      <button class="ctrl-btn" id="btn-prev" title="上一頁">
+        <span>&#x25C0;</span>
+        <span class="btn-label">上一頁</span>
+      </button>
+      <span id="page-info">- / -</span>
+      <button class="ctrl-btn" id="btn-next" title="下一頁">
+        <span class="btn-label">下一頁</span>
+        <span>&#x25B6;</span>
+      </button>
+      <button class="ctrl-btn" id="btn-last" title="最後一頁">
+        <span class="btn-label">最後一頁</span>
+        <span>&#x23ED;</span>
+      </button>
+      <button class="ctrl-btn" id="btn-zoom-out" title="縮小">
+        <span>&#x2212;</span>
+      </button>
+      <span id="zoom-info">100%</span>
+      <button class="ctrl-btn" id="btn-zoom-in" title="放大">
+        <span>&#x002B;</span>
+      </button>
+      <button class="ctrl-btn" id="btn-zoom-reset" title="還原縮放">
+        <span>&#x21BA;</span>
+      </button>
+      <button class="ctrl-btn" id="btn-fullscreen" title="全螢幕">
+        <span>&#x26F6;</span>
+        <span class="btn-label">全螢幕</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- StPageFlip -->
+  <script src="js/page-flip.browser.js"></script>
+  <!-- Main logic (v2.3.1 — image-based, no PDF.js; 中灰主題 + 縮放) -->
+  <!-- 注意：不可加 type="module"，否則 file:// 雙擊離線開啟會被 CORS 擋（本檔無 import/export，普通 script 即可） -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>
